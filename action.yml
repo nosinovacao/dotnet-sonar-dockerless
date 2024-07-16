@@ -35,6 +35,12 @@ inputs:
 runs:
   using: composite
   steps:
+  - name:
+    if: ${{ inputs.shell == 'powershell' }}
+    run: echo "step=${{ inputs.step }}" >> $env:GITHUB_ENV
+  - name:
+    if: ${{ inputs.shell == 'bash' }}
+    run: export step=${{ inputs.step }}
   - name: install sonar-scanner via dotnet tool
     shell: ${{ inputs.shell }}
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
@@ -42,7 +48,6 @@ runs:
     if: ${{ inputs.shell == 'powershell' }}
     shell: ${{ inputs.shell }}
     run: |
-      echo "step=${{ inputs.step }}" >> $env:GITHUB_ENV
       if ($env:step -eq "end") {
         dotnet sonarscanner $env:step /d:sonar.token="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
       }
@@ -53,7 +58,6 @@ runs:
     if: ${{ inputs.shell == 'bash' }}
     shell: ${{ inputs.shell }}
     run: |
-      export step=${{ inputs.step }}
       if [ "$step" = "end" ]; then
         dotnet sonarscanner $step /d:sonar.token="${inputs.sonar-token}" "${inputs.extra-args}"
       else
