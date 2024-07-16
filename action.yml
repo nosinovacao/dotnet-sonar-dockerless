@@ -35,11 +35,13 @@ inputs:
 runs:
   using: composite
   steps:
-  - name:
+  - name: export env vars for the input
     if: ${{ inputs.shell == 'powershell' }}
+    shell: ${{ inputs.shell }}
     run: echo "step=${{ inputs.step }}" >> $env:GITHUB_ENV
-  - name:
+  - name: export env vars for the input
     if: ${{ inputs.shell == 'bash' }}
+    shell: ${{ inputs.shell }}
     run: export step=${{ inputs.step }}
   - name: install sonar-scanner via dotnet tool
     shell: ${{ inputs.shell }}
