@@ -41,8 +41,9 @@ runs:
   - name: run sonar-scanner
     shell: ${{ inputs.shell }}
     run: |
-      if [ "${{ inputs.step }}" == "end" ]; then
+      if (${{ inputs.step }} -eq "end") {
         dotnet sonarscanner ${{ inputs.step }} /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
-      else
+      }
+      else {
         dotnet sonarscanner ${{ inputs.step }} /k:"${{ inputs.project-key }}" /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
-      fi
+      }
