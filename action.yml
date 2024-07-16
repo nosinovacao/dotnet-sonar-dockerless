@@ -1,0 +1,39 @@
+name: Install SonarQube scanner
+description: A GitHub Action to install sonarscanner with java, in a platform agnostic way
+author: NOS Inovação
+branding:
+  color: blue
+  icon: search
+
+inputs:
+  version:
+    description: The version of the scanner to be used
+    required: false
+    default: 6.2.0
+  step:
+    description: The step to be used
+    required: true
+    default: 'begin'
+  sonar-url:
+    description: The url of the sonar server
+    required: true
+  sonar-token:
+    description: The token of the sonar server
+    required: true
+  project-key:
+    description: The project key of the sonar server
+    required: true
+  extra-args:
+    description: Extra arguments to be used
+    required: false
+
+
+runs:
+  using: composite
+  steps:
+  - name: install sonar-scanner via dotnet tool
+    shell: bash
+    run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
+  - name: run sonar-scanner
+    shell: bash
+    run: dotnet sonarscanner ${{ inputs.step }} -Dsonar.host.url=${{ inputs.sonar-url }} -Dsonar.token=${{ inputs.sonar-token }} -Dsonar.projectKey=${{ inputs.project-key }} ${{ inputs.extra-args }}
