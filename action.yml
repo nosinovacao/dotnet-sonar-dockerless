@@ -40,4 +40,9 @@ runs:
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
   - name: run sonar-scanner
     shell: ${{ inputs.shell }}
-    run: dotnet sonarscanner ${{ inputs.step }} /k:"${{ inputs.project-key }}" /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
+    run: |
+      if [ "${{ inputs.step }}" == "end" ]; then
+        dotnet sonarscanner ${{ inputs.step }} /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
+      else
+        dotnet sonarscanner ${{ inputs.step }} /k:"${{ inputs.project-key }}" /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
+      fi
