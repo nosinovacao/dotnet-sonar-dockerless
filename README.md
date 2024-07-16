@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install SonarQube scanner
-      uses: nosinovacao/dotnet-sonar-dockerless-action@v1
+      uses: nosinovacao/dotnet-sonar-dockerless@v1
       with:
         version: '6.2.0' # Optional, default is 6.2.0
         step: 'begin' # Required, default is 'begin'
@@ -29,7 +29,7 @@ jobs:
         sonar-token: ${{ secrets.SONAR_TOKEN }} # Required
         project-key: 'your-project-key' # Required
         extra-args:  # Optional
-        shell: 'bash' # Optional, default is pwsh
+        shell: 'bash' # Optional, default is powershell
 ```
 
 # Inputs
@@ -39,7 +39,7 @@ jobs:
 * `sonar-token`: The token for the SonarQube server. **Required**.
 * `project-key`: The project key for the SonarQube server. **Required**.
 * `extra-args`: Extra arguments to be used. Optional.
-* `shell`: The shell to be used. Default is `pwsh`.
+* `shell`: The shell to be used. Default is `powershell`.
 
 # Author
 This action is maintained by NOS Inovação.

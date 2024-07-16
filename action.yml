@@ -38,12 +38,24 @@ runs:
   - name: install sonar-scanner via dotnet tool
     shell: ${{ inputs.shell }}
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
-  - name: run sonar-scanner
+  - name: run sonar-scanner windows
+    if: ${{ inputs.shell == 'powershell' }}
     shell: ${{ inputs.shell }}
     run: |
+      echo "step=${{ inputs.step }}" >> $env:GITHUB_ENV
       if ($env:step -eq "end") {
-        dotnet sonarscanner $env:step /d:sonar.login="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
+        dotnet sonarscanner $env:step /d:sonar.token="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
       }
       else {
-        dotnet sonarscanner $env:step /k:"${{ inputs.project-key }}" /d:sonar.login="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
+        dotnet sonarscanner $env:step /k:"${{ inputs.project-key }}" /d:sonar.token="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
       }
+  - name: run sonar-scanner linux
+    if: ${{ inputs.shell == 'bash' }}
+    shell: ${{ inputs.shell }}
+    run: |
+      export step=${{ inputs.step }}
+      if [ "$step" = "end" ]; then
+        dotnet sonarscanner $step /d:sonar.token="${inputs.sonar-token}" "${inputs.extra-args}"
+      else
+        dotnet sonarscanner $step /k:"${inputs.project-key}" /d:sonar.token="${inputs.sonar-token}" /d:sonar.host.url="${inputs.sonar-url}" "${inputs.extra-args}"
+      fi
