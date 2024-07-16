@@ -26,14 +26,18 @@ inputs:
   extra-args:
     description: Extra arguments to be used
     required: false
+  shell:
+    description: The shell to be used
+    required: false
+    default: pwsh
 
 
 runs:
   using: composite
   steps:
   - name: install sonar-scanner via dotnet tool
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
   - name: run sonar-scanner
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: dotnet sonarscanner ${{ inputs.step }} -Dsonar.host.url=${{ inputs.sonar-url }} -Dsonar.token=${{ inputs.sonar-token }} -Dsonar.projectKey=${{ inputs.project-key }} ${{ inputs.extra-args }}

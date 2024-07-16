@@ -29,6 +29,7 @@ jobs:
         sonar-token: ${{ secrets.SONAR_TOKEN }} # Required
         project-key: 'your-project-key' # Required
         extra-args:  # Optional
+        shell: 'bash' # Optional, default is pwsh
 ```
 
 # Inputs
@@ -38,6 +39,7 @@ jobs:
 * `sonar-token`: The token for the SonarQube server. **Required**.
 * `project-key`: The project key for the SonarQube server. **Required**.
 * `extra-args`: Extra arguments to be used. Optional.
+* `shell`: The shell to be used. Default is `pwsh`.
 
 # Author
 This action is maintained by NOS Inovação.
