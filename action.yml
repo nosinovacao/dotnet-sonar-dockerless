@@ -35,33 +35,11 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: export env vars for the input
-    if: ${{ inputs.shell == 'powershell' }}
-    shell: ${{ inputs.shell }}
-    run: echo "step=${{ inputs.step }}" >> $env:GITHUB_ENV
-  - name: export env vars for the input
-    if: ${{ inputs.shell == 'bash' }}
-    shell: ${{ inputs.shell }}
-    run: export step=${{ inputs.step }}
   - name: install sonar-scanner via dotnet tool
-    shell: ${{ inputs.shell }}
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
-  - name: run sonar-scanner windows
-    if: ${{ inputs.shell == 'powershell' }}
-    shell: ${{ inputs.shell }}
-    run: |
-      if ($env:step -eq "end") {
-        dotnet sonarscanner $env:step /d:sonar.token="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
-      }
-      else {
-        dotnet sonarscanner $env:step /k:"${{ inputs.project-key }}" /d:sonar.token="${{ inputs.sonar-token }}" /d:sonar.host.url="${{ inputs.sonar-url }}" ${{ inputs.extra-args }}
-      }
-  - name: run sonar-scanner linux
-    if: ${{ inputs.shell == 'bash' }}
-    shell: ${{ inputs.shell }}
-    run: |
-      if [ "$step" = "end" ]; then
-        dotnet sonarscanner $step /d:sonar.token="${inputs.sonar-token}" "${inputs.extra-args}"
-      else
-        dotnet sonarscanner $step /k:"${inputs.project-key}" /d:sonar.token="${inputs.sonar-token}" /d:sonar.host.url="${inputs.sonar-url}" "${inputs.extra-args}"
-      fi
+  - name: run sonar-scanner begin
+    if: ${{ inputs.step == 'begin' }}
+    run: dotnet sonarscanner $step /k:"${inputs.project-key}" /d:sonar.token="${inputs.sonar-token}" /d:sonar.host.url="${inputs.sonar-url}" "${inputs.extra-args}"
+  - name: run sonar-scanner end
+    if: ${{ inputs.step == 'end' }}
+    run: dotnet sonarscanner $env:step /d:sonar.token="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
