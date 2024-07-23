@@ -36,10 +36,13 @@ runs:
   using: composite
   steps:
   - name: install sonar-scanner via dotnet tool
+    shell: ${{ inputs.shell }}
     run: dotnet tool install --global dotnet-sonarscanner --version ${{ inputs.version }}
   - name: run sonar-scanner begin
+    shell: ${{ inputs.shell }}
     if: ${{ inputs.step == 'begin' }}
     run: dotnet sonarscanner $step /k:"${inputs.project-key}" /d:sonar.token="${inputs.sonar-token}" /d:sonar.host.url="${inputs.sonar-url}" "${inputs.extra-args}"
   - name: run sonar-scanner end
+    shell: ${{ inputs.shell }}
     if: ${{ inputs.step == 'end' }}
     run: dotnet sonarscanner $env:step /d:sonar.token="${{ inputs.sonar-token }}" ${{ inputs.extra-args }}
